@@ -1,16 +1,32 @@
-import * as React from 'react';
-import { Text, View, StyleSheet } from 'react-native';
+// In App.js in a new project
 
-const Appnavigator = () => {
+import * as React from 'react';
+import { View, Text } from 'react-native';
+import { NavigationContainer } from '@react-navigation/native';
+import { createNativeStackNavigator } from '@react-navigation/native-stack';
+
+function HomeScreen() {
   return (
-    <View style={styles.container}>
-      <Text>Appnavigatossdr</Text>
+    <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
+      <Text>Home Screen</Text>
     </View>
   );
-};
+}
 
-export default Appnavigator;
+const Stack = createNativeStackNavigator();
 
-const styles = StyleSheet.create({
-  container: {},
-});
+function RootStack() {
+  return (
+    <Stack.Navigator>
+      <Stack.Screen name="Home" component={HomeScreen} />
+    </Stack.Navigator>
+  );
+}
+
+export default function App() {
+  return (
+    <NavigationContainer>
+      <RootStack />
+    </NavigationContainer>
+  );
+}
