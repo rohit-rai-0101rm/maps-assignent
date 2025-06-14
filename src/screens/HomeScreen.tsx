@@ -10,6 +10,7 @@ import {
 } from 'react-native';
 import MapView, { Marker, Polyline } from 'react-native-maps';
 import Geolocation from '@react-native-community/geolocation';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const HomeScreen = () => {
   const [region, setRegion] = useState(null);
@@ -127,8 +128,9 @@ const HomeScreen = () => {
   };
 
   // Stop location tracking
-  const stopWalk = () => {
+  const stopWalk = async () => {
     setIsWalking(false);
+
     if (watchIdRef.current !== null) {
       Geolocation.clearWatch(watchIdRef.current);
       watchIdRef.current = null;
@@ -138,14 +140,27 @@ const HomeScreen = () => {
       timerRef.current = null;
     }
 
-    Alert.alert(
-      'Walk stopped',
-      `Duration: ${formatTime(elapsedTime)}\nPoints tracked: ${
-        routeCoordinates.length
-      }`,
-    );
+    // Save to AsyncStorage
+    const walkData = {
+      timestamp: Date.now(),
+      duration: elapsedTime,
+      route: routeCoordinates,
+    };
 
-    // Here you can save walk data (coordinates, elapsedTime, timestamp) to AsyncStorage
+    try {
+      const existing = await AsyncStorage.getItem('walks');
+      let walks = existing ? JSON.parse(existing) : [];
+      walks.push(walkData);
+      await AsyncStorage.setItem('walks', JSON.stringify(walks));
+      Alert.alert(
+        'Walk stopped',
+        `Duration: ${formatTime(elapsedTime)}\nPoints tracked: ${
+          routeCoordinates.length
+        }`,
+      );
+    } catch (err) {
+      console.log('Failed to save walk', err);
+    }
   };
 
   // Format seconds to mm:ss
