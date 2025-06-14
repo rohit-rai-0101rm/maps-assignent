@@ -1,3 +1,4 @@
+import android.os.Bundle;
 package com.mapsassignment
 
 import com.facebook.react.ReactActivity
