@@ -11,6 +11,7 @@ import {
 import MapView, { Marker, Polyline } from 'react-native-maps';
 import Geolocation from '@react-native-community/geolocation';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import { useNavigation } from '@react-navigation/native';
 
 const HomeScreen = () => {
   const [region, setRegion] = useState(null);
@@ -19,7 +20,7 @@ const HomeScreen = () => {
   const [isWalking, setIsWalking] = useState(false);
   const [routeCoordinates, setRouteCoordinates] = useState([]);
   const [elapsedTime, setElapsedTime] = useState(0);
-
+  const navigation = useNavigation();
   const timerRef = useRef(null);
   const watchIdRef = useRef(null);
 
@@ -208,6 +209,12 @@ const HomeScreen = () => {
         {isWalking && (
           <Text style={styles.timer}>Time: {formatTime(elapsedTime)}</Text>
         )}
+        <TouchableOpacity
+          onPress={() => navigation.navigate('mywalks')}
+          style={[styles.button, { backgroundColor: '#333', marginTop: 10 }]}
+        >
+          <Text style={styles.buttonText}>My Walks</Text>
+        </TouchableOpacity>
       </View>
     </View>
   );
