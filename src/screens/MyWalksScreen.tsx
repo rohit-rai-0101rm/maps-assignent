@@ -1,32 +1,38 @@
 import React, { useEffect, useState } from 'react';
-import { View, Text, FlatList, StyleSheet } from 'react-native';
+import {
+  View,
+  Text,
+  FlatList,
+  TouchableOpacity,
+  StyleSheet,
+} from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import { useNavigation } from '@react-navigation/native';
 
 const WalksScreen = () => {
   const [walks, setWalks] = useState([]);
+  const navigation = useNavigation();
 
   useEffect(() => {
-    const fetchWalks = async () => {
-      try {
-        const data = await AsyncStorage.getItem('walks');
-        if (data) {
-          setWalks(JSON.parse(data));
-        }
-      } catch (err) {
-        console.log('Failed to load walks', err);
+    const loadWalks = async () => {
+      const data = await AsyncStorage.getItem('walks');
+      if (data) {
+        setWalks(JSON.parse(data));
       }
     };
-    fetchWalks();
+    loadWalks();
   }, []);
 
   const renderItem = ({ item }) => (
-    <View style={styles.item}>
+    <TouchableOpacity
+      style={styles.item}
+      onPress={() => navigation.navigate('walkdetails', { walk: item })}
+    >
       <Text>Date: {new Date(item.timestamp).toLocaleString()}</Text>
       <Text>
         Duration: {Math.floor(item.duration / 60)} min {item.duration % 60} sec
       </Text>
-      <Text>Points: {item.route.length}</Text>
-    </View>
+    </TouchableOpacity>
   );
 
   return (
@@ -35,7 +41,6 @@ const WalksScreen = () => {
         data={walks}
         keyExtractor={(item, index) => index.toString()}
         renderItem={renderItem}
-        ListEmptyComponent={<Text>No walks found</Text>}
       />
     </View>
   );
@@ -44,13 +49,11 @@ const WalksScreen = () => {
 export default WalksScreen;
 
 const styles = StyleSheet.create({
-  container: { flex: 1, padding: 20 },
+  container: { flex: 1, padding: 16 },
   item: {
-    padding: 15,
-    borderBottomWidth: 1,
-    borderBottomColor: '#ccc',
-    backgroundColor: '#f9f9f9',
-    borderRadius: 8,
+    padding: 16,
+    backgroundColor: '#eee',
     marginBottom: 10,
+    borderRadius: 8,
   },
 });
