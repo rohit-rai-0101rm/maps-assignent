@@ -1,13 +1,14 @@
-// useWalkTracker.ts
 import { useState, useRef, useCallback } from 'react';
 import { Alert } from 'react-native';
 import Geolocation, { GeolocationResponse } from '@react-native-community/geolocation';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { formatTime } from '../utils';
+import { calculateDistance } from '../utils/calculateDistance'; // ✅ Import distance util
 
 type WalkData = {
     timestamp: number;
     duration: number;
+    distance: number; // ✅ Include distance
     route: { latitude: number; longitude: number }[];
 };
 
@@ -19,45 +20,50 @@ const useWalkTracker = () => {
     const watchIdRef = useRef<number | null>(null);
 
     const startWalk = useCallback(() => {
-        setRouteCoordinates([]);  // Reset coordinates at the start of the walk
-        setElapsedTime(0);  // Reset elapsed time
-        setIsWalking(true); // Set walking state to true
+        setRouteCoordinates([]);
+        setElapsedTime(0);
+        setIsWalking(true);
 
         timerRef.current = setInterval(() => {
-            setElapsedTime(prev => prev + 1); // Increase elapsed time by 1 every second
+            setElapsedTime(prev => prev + 1);
         }, 1000);
 
         watchIdRef.current = Geolocation.watchPosition(
             (position: GeolocationResponse) => {
                 const { latitude, longitude } = position.coords;
-                setRouteCoordinates(prev => [...prev, { latitude, longitude }]); // Append new coordinates
+                setRouteCoordinates(prev => [...prev, { latitude, longitude }]);
             },
             error => {
-                console.log(error);
+                console.log('Location error:', error);
             },
             {
                 enableHighAccuracy: true,
-                distanceFilter: 1, // Update position when moving 1 meter
-                interval: 5000,  // Update every 5 seconds
-                fastestInterval: 2000, // Update every 2 seconds at the fastest
+                distanceFilter: 1,
+                interval: 5000,
+                fastestInterval: 2000,
             },
         );
     }, []);
 
     const stopWalk = useCallback(async () => {
-        setIsWalking(false);  // Set walking state to false
+        setIsWalking(false);
+
         if (watchIdRef.current !== null) {
-            Geolocation.clearWatch(watchIdRef.current);  // Clear position watch
+            Geolocation.clearWatch(watchIdRef.current);
             watchIdRef.current = null;
         }
+
         if (timerRef.current) {
-            clearInterval(timerRef.current);  // Clear the timer
+            clearInterval(timerRef.current);
             timerRef.current = null;
         }
+
+        const distance = calculateDistance(routeCoordinates); // ✅ Calculate distance
 
         const walkData: WalkData = {
             timestamp: Date.now(),
             duration: elapsedTime,
+            distance,
             route: routeCoordinates,
         };
 
@@ -66,19 +72,25 @@ const useWalkTracker = () => {
             const walks = existing ? JSON.parse(existing) : [];
             walks.push(walkData);
             await AsyncStorage.setItem('walks', JSON.stringify(walks));
+
             Alert.alert(
-                'Walk stopped',
-                `Duration: ${formatTime(elapsedTime)}\nPoints tracked: ${routeCoordinates.length}`,
+                'Walk saved',
+                `🕒 Duration: ${formatTime(elapsedTime)}\n📍 Points: ${routeCoordinates.length}\n📏 Distance: ${distance.toFixed(2)} km`,
             );
         } catch (err) {
             console.log('Failed to save walk', err);
         }
 
-        // Clear route coordinates after walk is saved
         setRouteCoordinates([]);
     }, [elapsedTime, routeCoordinates]);
 
-    return { isWalking, routeCoordinates, elapsedTime, startWalk, stopWalk };
+    return {
+        isWalking,
+        routeCoordinates,
+        elapsedTime,
+        startWalk,
+        stopWalk,
+    };
 };
 
 export default useWalkTracker;
