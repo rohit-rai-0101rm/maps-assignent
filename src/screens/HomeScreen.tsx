@@ -1,3 +1,4 @@
+// HomeScreen.tsx
 import React, { useState, useRef, useCallback } from 'react';
 import {
   View,
@@ -9,21 +10,32 @@ import {
   TouchableOpacity,
   ActivityIndicator,
 } from 'react-native';
-import MapView, { Polyline } from 'react-native-maps';
-import Geolocation from '@react-native-community/geolocation';
+import MapView, { Polyline, Region as MapRegion } from 'react-native-maps';
+import Geolocation, {
+  GeolocationResponse,
+} from '@react-native-community/geolocation';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useNavigation, useFocusEffect } from '@react-navigation/native';
+import { formatTime } from '../utils';
+
+type WalkData = {
+  timestamp: number;
+  duration: number;
+  route: { latitude: number; longitude: number }[];
+};
 
 const HomeScreen = () => {
-  const [region, setRegion] = useState(null);
-  const [locationPermission, setLocationPermission] = useState(false);
-  const [isWalking, setIsWalking] = useState(false);
-  const [routeCoordinates, setRouteCoordinates] = useState([]);
-  const [elapsedTime, setElapsedTime] = useState(0);
-  const [loading, setLoading] = useState(false);
+  const [region, setRegion] = useState<MapRegion | null>(null);
+  const [locationPermission, setLocationPermission] = useState<boolean>(false);
+  const [isWalking, setIsWalking] = useState<boolean>(false);
+  const [routeCoordinates, setRouteCoordinates] = useState<
+    { latitude: number; longitude: number }[]
+  >([]);
+  const [elapsedTime, setElapsedTime] = useState<number>(0);
+  const [loading, setLoading] = useState<boolean>(false);
 
-  const timerRef = useRef(null);
-  const watchIdRef = useRef(null);
+  const timerRef = useRef<NodeJS.Timeout | null>(null);
+  const watchIdRef = useRef<number | null>(null);
   const navigation = useNavigation();
 
   useFocusEffect(
@@ -66,7 +78,7 @@ const HomeScreen = () => {
     setLocationPermission(true);
 
     Geolocation.getCurrentPosition(
-      position => {
+      (position: GeolocationResponse) => {
         const { latitude, longitude } = position.coords;
         setRegion({
           latitude,
@@ -95,7 +107,7 @@ const HomeScreen = () => {
     }, 1000);
 
     watchIdRef.current = Geolocation.watchPosition(
-      position => {
+      (position: GeolocationResponse) => {
         const { latitude, longitude } = position.coords;
         setRegion(prev => ({
           ...prev,
@@ -127,7 +139,7 @@ const HomeScreen = () => {
       timerRef.current = null;
     }
 
-    const walkData = {
+    const walkData: WalkData = {
       timestamp: Date.now(),
       duration: elapsedTime,
       route: routeCoordinates,
@@ -152,13 +164,7 @@ const HomeScreen = () => {
     setRouteCoordinates([]);
   };
 
-  const formatTime = seconds => {
-    const mins = Math.floor(seconds / 60);
-    const secs = seconds % 60;
-    return `${mins.toString().padStart(2, '0')}:${secs
-      .toString()
-      .padStart(2, '0')}`;
-  };
+  const latestCoord = routeCoordinates[routeCoordinates.length - 1];
 
   if (!region) {
     return (
@@ -178,8 +184,6 @@ const HomeScreen = () => {
       </View>
     );
   }
-
-  const latestCoord = routeCoordinates[routeCoordinates.length - 1];
 
   return (
     <View style={styles.container}>
@@ -231,8 +235,6 @@ const HomeScreen = () => {
   );
 };
 
-export default HomeScreen;
-
 const styles = StyleSheet.create({
   container: { flex: 1 },
   map: { flex: 1 },
@@ -280,3 +282,5 @@ const styles = StyleSheet.create({
     borderRadius: 6,
   },
 });
+
+export default HomeScreen;
