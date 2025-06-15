@@ -48,7 +48,7 @@ const HomeScreen = () => {
         {routeCoordinates.length > 0 && (
           <Polyline
             coordinates={routeCoordinates}
-            strokeColor="#4285F4"
+            strokeColor="#1a73e8" // Google Maps-like blue color
             strokeWidth={6}
             lineCap="round"
             lineJoin="round"
