@@ -1,59 +1,32 @@
-import React, { useEffect, useState } from 'react';
-import {
-  View,
-  Text,
-  FlatList,
-  TouchableOpacity,
-  StyleSheet,
-} from 'react-native';
-import AsyncStorage from '@react-native-async-storage/async-storage';
-import { useNavigation } from '@react-navigation/native';
+// src/screens/WalksScreen.tsx
+import React from 'react';
+import { View, FlatList, StyleSheet } from 'react-native';
+import WalkItem from '../components/WalkItem';
+import NoWalksMessage from '../components/NoWalkMessage';
+import useWalks from '../hooks/useWalk';
 
 const WalksScreen = () => {
-  const [walks, setWalks] = useState([]);
-  const navigation = useNavigation();
+  const walks = useWalks();
 
-  useEffect(() => {
-    const loadWalks = async () => {
-      const data = await AsyncStorage.getItem('walks');
-      if (data) {
-        setWalks(JSON.parse(data));
-      }
-    };
-    loadWalks();
-  }, []);
-
-  const renderItem = ({ item }) => (
-    <TouchableOpacity
-      style={styles.item}
-      onPress={() => navigation.navigate('walkdetails', { walk: item })}
-    >
-      <Text>Date: {new Date(item.timestamp).toLocaleString()}</Text>
-      <Text>
-        Duration: {Math.floor(item.duration / 60)} min {item.duration % 60} sec
-      </Text>
-    </TouchableOpacity>
-  );
+  const renderItem = ({ item }) => <WalkItem walk={item} />;
 
   return (
     <View style={styles.container}>
-      <FlatList
-        data={walks}
-        keyExtractor={(item, index) => index.toString()}
-        renderItem={renderItem}
-      />
+      {walks.length === 0 ? (
+        <NoWalksMessage />
+      ) : (
+        <FlatList
+          data={walks}
+          keyExtractor={item => item.timestamp.toString()}
+          renderItem={renderItem}
+        />
+      )}
     </View>
   );
 };
 
-export default WalksScreen;
-
 const styles = StyleSheet.create({
   container: { flex: 1, padding: 16 },
-  item: {
-    padding: 16,
-    backgroundColor: '#eee',
-    marginBottom: 10,
-    borderRadius: 8,
-  },
 });
+
+export default WalksScreen;
