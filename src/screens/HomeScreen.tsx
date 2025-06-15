@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useRef } from 'react';
+import React, { useState, useRef, useCallback } from 'react';
 import {
   View,
   Text,
@@ -7,11 +7,12 @@ import {
   PermissionsAndroid,
   Alert,
   TouchableOpacity,
+  ActivityIndicator,
 } from 'react-native';
 import MapView, { Polyline } from 'react-native-maps';
 import Geolocation from '@react-native-community/geolocation';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import { useNavigation } from '@react-navigation/native';
+import { useNavigation, useFocusEffect } from '@react-navigation/native';
 
 const HomeScreen = () => {
   const [region, setRegion] = useState(null);
@@ -19,22 +20,23 @@ const HomeScreen = () => {
   const [isWalking, setIsWalking] = useState(false);
   const [routeCoordinates, setRouteCoordinates] = useState([]);
   const [elapsedTime, setElapsedTime] = useState(0);
+  const [loading, setLoading] = useState(false);
 
   const timerRef = useRef(null);
   const watchIdRef = useRef(null);
   const navigation = useNavigation();
 
-  useEffect(() => {
-    requestLocationPermission();
+  useFocusEffect(
+    useCallback(() => {
+      if (!isWalking) {
+        setRegion(null);
+        setRouteCoordinates([]); // Clear route coords on focus if not walking
+      }
+    }, [isWalking]),
+  );
 
-    return () => {
-      if (watchIdRef.current !== null)
-        Geolocation.clearWatch(watchIdRef.current);
-      if (timerRef.current) clearInterval(timerRef.current);
-    };
-  }, []);
-
-  const requestLocationPermission = async () => {
+  const fetchLocation = async () => {
+    setLoading(true);
     if (Platform.OS === 'android') {
       try {
         const granted = await PermissionsAndroid.request(
@@ -47,24 +49,22 @@ const HomeScreen = () => {
             buttonPositive: 'OK',
           },
         );
-        if (granted === PermissionsAndroid.RESULTS.GRANTED) {
-          setLocationPermission(true);
-          getCurrentLocation();
-        } else {
+        if (granted !== PermissionsAndroid.RESULTS.GRANTED) {
           Alert.alert(
             'Permission Denied',
             'Location permission is required to use this feature.',
           );
+          setLoading(false);
+          return;
         }
       } catch (err) {
         console.warn(err);
+        setLoading(false);
+        return;
       }
-    } else {
-      getCurrentLocation();
     }
-  };
+    setLocationPermission(true);
 
-  const getCurrentLocation = () => {
     Geolocation.getCurrentPosition(
       position => {
         const { latitude, longitude } = position.coords;
@@ -74,11 +74,12 @@ const HomeScreen = () => {
           latitudeDelta: 0.01,
           longitudeDelta: 0.01,
         });
-        setLocationPermission(true);
+        setLoading(false);
       },
       error => {
         Alert.alert('Error', 'Failed to get current location');
         console.log(error);
+        setLoading(false);
       },
       { enableHighAccuracy: true, timeout: 15000, maximumAge: 10000 },
     );
@@ -96,12 +97,11 @@ const HomeScreen = () => {
     watchIdRef.current = Geolocation.watchPosition(
       position => {
         const { latitude, longitude } = position.coords;
-        setRegion({
+        setRegion(prev => ({
+          ...prev,
           latitude,
           longitude,
-          latitudeDelta: 0.01,
-          longitudeDelta: 0.01,
-        });
+        }));
         setRouteCoordinates(prev => [...prev, { latitude, longitude }]);
       },
       error => {
@@ -147,6 +147,9 @@ const HomeScreen = () => {
     } catch (err) {
       console.log('Failed to save walk', err);
     }
+
+    // Clear polyline after walk
+    setRouteCoordinates([]);
   };
 
   const formatTime = seconds => {
@@ -160,7 +163,18 @@ const HomeScreen = () => {
   if (!region) {
     return (
       <View style={styles.center}>
-        <Text>Fetching current location...</Text>
+        <TouchableOpacity
+          style={styles.fetchButton}
+          onPress={fetchLocation}
+          disabled={loading}
+        >
+          {loading ? (
+            <ActivityIndicator color="white" />
+          ) : (
+            <Text style={styles.buttonText}>Fetch Current Location</Text>
+          )}
+        </TouchableOpacity>
+        <Text style={{ marginTop: 10 }}>Location is required to start</Text>
       </View>
     );
   }
@@ -173,8 +187,10 @@ const HomeScreen = () => {
         {routeCoordinates.length > 0 && (
           <Polyline
             coordinates={routeCoordinates}
-            strokeColor="#F0597A"
-            strokeWidth={4}
+            strokeColor="#4285F4"
+            strokeWidth={6}
+            lineCap="round"
+            lineJoin="round"
           />
         )}
       </MapView>
@@ -206,7 +222,7 @@ const HomeScreen = () => {
 
         <TouchableOpacity
           onPress={() => navigation.navigate('mywalks')}
-          style={[styles.button, { backgroundColor: '#333', marginTop: 10 }]}
+          style={[styles.button, styles.myWalksButton]}
         >
           <Text style={styles.buttonText}>My Walks</Text>
         </TouchableOpacity>
@@ -223,7 +239,7 @@ const styles = StyleSheet.create({
   center: { flex: 1, justifyContent: 'center', alignItems: 'center' },
   controls: {
     position: 'absolute',
-    bottom: 50,
+    bottom: 40,
     left: 20,
     right: 20,
     alignItems: 'center',
@@ -233,6 +249,17 @@ const styles = StyleSheet.create({
     paddingHorizontal: 30,
     borderRadius: 25,
     elevation: 3,
+  },
+  fetchButton: {
+    backgroundColor: '#F0597A',
+    paddingVertical: 14,
+    paddingHorizontal: 30,
+    borderRadius: 25,
+    elevation: 3,
+  },
+  myWalksButton: {
+    backgroundColor: '#333',
+    marginTop: 10,
   },
   buttonText: {
     color: 'white',
