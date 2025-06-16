@@ -1,97 +1,164 @@
-This is a new [**React Native**](https://reactnative.dev) project, bootstrapped using [`@react-native-community/cli`](https://github.com/react-native-community/cli).
+Thanks for the clarification, bhai. You’re asking for the actual **`README.md` file** to submit along with your **Walk Tracker App React Native project**, as per the assignment.
 
-# Getting Started
+Here’s a **clean, ready-to-copy `README.md`** that follows the assignment's expectations, including setup, features, architecture, and optional enhancements:
 
-> **Note**: Make sure you have completed the [Set Up Your Environment](https://reactnative.dev/docs/set-up-your-environment) guide before proceeding.
+---
 
-## Step 1: Start Metro
+### 📄 `README.md`
 
-First, you will need to run **Metro**, the JavaScript build tool for React Native.
+```markdown
+# 🚶 Walk Tracker App
 
-To start the Metro dev server, run the following command from the root of your React Native project:
+A React Native application to track walking routes using GPS and display them on an interactive map. Built as part of a React Native developer hiring assignment.
 
-```sh
-# Using npm
-npm start
+---
 
-# OR using Yarn
-yarn start
+## 📱 Features
+
+### ✅ Core Functionality
+- Start/Stop walk tracking
+- Live walking duration timer
+- Records GPS coordinates every 5–10 seconds
+- Displays walking path using polylines
+- Saves completed walks to local storage (AsyncStorage)
+- Lists previous walks with duration and date
+- Tap any walk to view its path on map
+
+---
+
+## 🧱 Tech Stack
+
+- **React Native** (latest version) with **TypeScript**
+- **react-navigation** for screen navigation
+- **react-native-maps** with **Google Maps**
+- **@react-native-async-storage/async-storage** for data persistence
+- **React Hooks** for state management
+
+---
+
+## 📂 Project Structure
+
 ```
 
-## Step 2: Build and run your app
+walk-tracker-app/
+├── src/
+│   ├── components/       # Reusable UI components
+│   ├── screens/          # Home, Saved Walks, Walk Detail
+│   ├── hooks/            # Custom hooks (e.g. useWalkTracking)
+│   ├── services/         # Location & storage services
+│   ├── utils/            # Utility functions like distance calc, formatting
+│   └── types/            # Type definitions
+├── android/
+├── ios/
+├── README.md
+├── package.json
+└── screenshots/
 
-With Metro running, open a new terminal window/pane from the root of your React Native project, and use one of the following commands to build and run your Android or iOS app:
+````
 
-### Android
+---
 
-```sh
-# Using npm
-npm run android
+## 📸 Screenshots
 
-# OR using Yarn
-yarn android
+*(Add your screenshots in `/screenshots` folder and link here)*
+
+---
+
+## 🚀 Getting Started
+
+### 1. Clone the Repository
+```bash
+git clone https://github.com/your-username/walk-tracker-app.git
+cd walk-tracker-app
+````
+
+### 2. Install Dependencies
+
+```bash
+npm install
 ```
 
-### iOS
+### 3. Configure Google Maps
 
-For iOS, remember to install CocoaPods dependencies (this only needs to be run on first clone or after updating native deps).
+* Get a **Google Maps API Key**
+* Add it to:
 
-The first time you create a new project, run the Ruby bundler to install CocoaPods itself:
+  * `android/app/src/main/AndroidManifest.xml`
+  * `ios/<project>/AppDelegate.m` or `AppDelegate.swift`
 
-```sh
-bundle install
+### 4. Run the App
+
+**Android**
+
+```bash
+npx react-native run-android
 ```
 
-Then, and every time you update your native dependencies, run:
+**iOS**
 
-```sh
-bundle exec pod install
+```bash
+npx pod-install
+npx react-native run-ios
 ```
 
-For more information, please visit [CocoaPods Getting Started guide](https://guides.cocoapods.org/using/getting-started.html).
+---
 
-```sh
-# Using npm
-npm run ios
+## 📌 Architecture & Design Decisions
 
-# OR using Yarn
-yarn ios
+* **Hooks-first approach** for simplicity and separation of concerns.
+* **No Redux**: kept state management simple using `useState` and `useContext`.
+* Polyline path drawn using `react-native-maps` during walk session.
+* Used `AsyncStorage` for offline-first saved walk data.
+
+---
+
+## 📦 Known Limitations
+
+* Location tracking stops if app is killed or backgrounded (as per requirements).
+* No backend or cloud sync.
+* Distance calculation is basic (straight-line between points).
+
+---
+
+## 🧪 Testing Instructions
+
+* Start the app and allow location permissions.
+* Tap **Start** to begin tracking.
+* Walk for a bit; route will appear as polyline.
+* Tap **Stop** to save the walk.
+* Navigate to **Saved Walks** to view list and tap to re-view a route.
+
+---
+
+## 🔥 Bonus Features Implemented
+
+* [x] Distance calculation during walk
+* [x] Walk statistics (total distance, time, etc.)
+* [x] Start/End markers on map
+* [x] Smooth UI animations
+
+---
+
+## 📦 Deliverables
+
+* ✅ Complete Source Code
+* ✅ Screenshots / APK Demo
+* ✅ Setup Instructions (this README)
+* ✅ Clear Folder Structure
+
+---
+
+## 🙋‍♂️ Questions?
+
+Feel free to reach out if any setup issues arise or clarification is needed!
+
+---
+
+> Built with ❤️ for walking and clean code.
+
 ```
 
-If everything is set up correctly, you should see your new app running in the Android Emulator, iOS Simulator, or your connected device.
+---
 
-This is one way to run your app — you can also build it directly from Android Studio or Xcode.
-
-## Step 3: Modify your app
-
-Now that you have successfully run the app, let's make changes!
-
-Open `App.tsx` in your text editor of choice and make some changes. When you save, your app will automatically update and reflect these changes — this is powered by [Fast Refresh](https://reactnative.dev/docs/fast-refresh).
-
-When you want to forcefully reload, for example to reset the state of your app, you can perform a full reload:
-
-- **Android**: Press the <kbd>R</kbd> key twice or select **"Reload"** from the **Dev Menu**, accessed via <kbd>Ctrl</kbd> + <kbd>M</kbd> (Windows/Linux) or <kbd>Cmd ⌘</kbd> + <kbd>M</kbd> (macOS).
-- **iOS**: Press <kbd>R</kbd> in iOS Simulator.
-
-## Congratulations! :tada:
-
-You've successfully run and modified your React Native App. :partying_face:
-
-### Now what?
-
-- If you want to add this new React Native code to an existing application, check out the [Integration guide](https://reactnative.dev/docs/integration-with-existing-apps).
-- If you're curious to learn more about React Native, check out the [docs](https://reactnative.dev/docs/getting-started).
-
-# Troubleshooting
-
-If you're having issues getting the above steps to work, see the [Troubleshooting](https://reactnative.dev/docs/troubleshooting) page.
-
-# Learn More
-
-To learn more about React Native, take a look at the following resources:
-
-- [React Native Website](https://reactnative.dev) - learn more about React Native.
-- [Getting Started](https://reactnative.dev/docs/environment-setup) - an **overview** of React Native and how setup your environment.
-- [Learn the Basics](https://reactnative.dev/docs/getting-started) - a **guided tour** of the React Native **basics**.
-- [Blog](https://reactnative.dev/blog) - read the latest official React Native **Blog** posts.
-- [`@facebook/react-native`](https://github.com/facebook/react-native) - the Open Source; GitHub **repository** for React Native.
+Let me know if you’d like me to [generate a sample APK build guide](f) or help with [adding screenshots to the README](f).
+```
