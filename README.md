@@ -1,157 +1,156 @@
+# Walk Tracker App
 
-```markdown
-# 🚶 Walk Tracker App
-
-A React Native application to track walking routes using GPS and display them on an interactive map. Built as part of a React Native developer hiring assignment.
+A React Native app to track walking routes using GPS and display them on an interactive map using Google Maps. Demonstrates GPS tracking, polyline rendering, and local storage with AsyncStorage.
 
 ---
 
-## 📱 Features
+## Features
 
-### ✅ Core Functionality
-- Start/Stop walk tracking
-- Live walking duration timer
-- Records GPS coordinates every 5–10 seconds
-- Displays walking path using polylines
-- Saves completed walks to local storage (AsyncStorage)
-- Lists previous walks with duration and date
-- Tap any walk to view its path on map
+### Home Screen
+
+* Google Map showing user's current location
+* Start/Stop walk tracking
+* Walk duration timer
+* Polyline route drawn in real time
+
+### Saved Walks Screen
+
+* List of saved walks with timestamp and duration
+* Tap any walk to view its route on map
+
+### GPS + Local Storage
+
+* Requests location permissions
+* Tracks coordinates every 5–10 seconds
+* Saves each completed walk to AsyncStorage
 
 ---
 
-## 🧱 Tech Stack
+## Tech Stack
 
-- **React Native** (latest version) with **TypeScript**
-- **react-navigation** for screen navigation
-- **react-native-maps** with **Google Maps**
-- **@react-native-async-storage/async-storage** for data persistence
-- **React Hooks** for state management
+* React Native (latest stable)
+* TypeScript
+* React Navigation
+* react-native-maps (Google Maps)
+* @react-native-async-storage/async-storage
+* React hooks (`useState`)
 
 ---
 
-## 📂 Project Structure
+## Architecture Decisions
+
+* TypeScript: For type safety and scalability
+* Local State: Kept minimal with React hooks
+* Persistent Storage: AsyncStorage used for simple walk data
+* Maps: Google Maps via `react-native-maps`
+
+---
+
+## Repository Structure
 
 ```
-
-walk-tracker-app/
+MapsAssignment/
 ├── src/
-│   ├── components/       # Reusable UI components
-│   ├── screens/          # Home, Saved Walks, Walk Detail
-│   ├── hooks/            # Custom hooks (e.g. useWalkTracking)
-│   ├── services/         # Location & storage services
-│   ├── utils/            # Utility functions like distance calc, formatting
-│   └── types/            # Type definitions
+│   ├── components/
+│   ├── screens/
+│   ├── hooks/
+│   ├── services/
+│   ├── utils/
+│   └── types/
 ├── android/
 ├── ios/
 ├── README.md
 ├── package.json
 └── screenshots/
-
-````
-
----
-
-## 📸 Screenshots
-
-*(Add your screenshots in `/screenshots` folder and link here)*
+```
 
 ---
 
-## 🚀 Getting Started
+## Getting Started
 
 ### 1. Clone the Repository
+
 ```bash
 git clone https://github.com/your-username/walk-tracker-app.git
 cd walk-tracker-app
-````
+```
 
 ### 2. Install Dependencies
 
 ```bash
 npm install
+# or
+yarn
 ```
 
-### 3. Configure Google Maps
+### 3. Add Google Maps API Key
 
-* Get a **Google Maps API Key**
-* Add it to:
+#### Android
 
-  * `android/app/src/main/AndroidManifest.xml`
-  * `ios/<project>/AppDelegate.m` or `AppDelegate.swift`
+Add inside `android/app/src/main/AndroidManifest.xml` under `<application>`:
+
+```xml
+<meta-data
+  android:name="com.google.android.geo.API_KEY"
+  android:value="YOUR_GOOGLE_MAPS_API_KEY"/>
+```
+
+#### iOS
+
+In `AppDelegate.mm`, add:
+
+```objc
+#import <GoogleMaps/GoogleMaps.h>
+```
+
+Then inside `didFinishLaunchingWithOptions:`:
+
+```objc
+[GMSServices provideAPIKey:@"YOUR_GOOGLE_MAPS_API_KEY"];
+```
+
+Then:
+
+```bash
+cd ios && pod install && cd ..
+```
 
 ### 4. Run the App
 
-**Android**
-
 ```bash
 npx react-native run-android
-```
-
-**iOS**
-
-```bash
-npx pod-install
+# or
 npx react-native run-ios
 ```
 
 ---
 
-## 📌 Architecture & Design Decisions
+## Testing Instructions
 
-* **Hooks-first approach** for simplicity and separation of concerns.
-* **No Redux**: kept state management simple using `useState` and `useContext`.
-* Polyline path drawn using `react-native-maps` during walk session.
-* Used `AsyncStorage` for offline-first saved walk data.
-
----
-
-## 📦 Known Limitations
-
-* Location tracking stops if app is killed or backgrounded (as per requirements).
-* No backend or cloud sync.
-* Distance calculation is basic (straight-line between points).
+1. Ensure location permissions are granted.
+2. Press Start Walk to begin tracking.
+3. Move around; the route will be drawn as a polyline.
+4. Press Stop Walk to save.
+5. Go to Saved Walks to view past sessions.
 
 ---
 
-## 🧪 Testing Instructions
+## Recommended Devices/Simulators
 
-* Start the app and allow location permissions.
-* Tap **Start** to begin tracking.
-* Walk for a bit; route will appear as polyline.
-* Tap **Stop** to save the walk.
-* Navigate to **Saved Walks** to view list and tap to re-view a route.
+* Android: Pixel 4+ (API 30+), GPS-enabled emulator or real device
+* iOS: iPhone 11+ (iOS 14+), preferably a physical device (for accurate GPS)
+* Make sure the emulator/simulator has location services enabled
 
 ---
 
-## 🔥 Bonus Features Implemented
 
-* [x] Distance calculation during walk
-* [x] Walk statistics (total distance, time, etc.)
-* [x] Start/End markers on map
-* [x] Smooth UI animations
 
----
+## Known Limitations
 
-## 📦 Deliverables
-
-* ✅ Complete Source Code
-* ✅ Screenshots / APK Demo
-* ✅ Setup Instructions (this README)
-* ✅ Clear Folder Structure
+* No background location tracking
+* Basic error messages (e.g., "Location unavailable")
+* Minimalist UI (focus was on functionality)
 
 ---
 
-## 🙋‍♂️ Questions?
 
-Feel free to reach out if any setup issues arise or clarification is needed!
-
----
-
-> Built with ❤️ for walking and clean code.
-
-```
-
----
-
-Let me know if you’d like me to [generate a sample APK build guide](f) or help with [adding screenshots to the README](f).
-```
