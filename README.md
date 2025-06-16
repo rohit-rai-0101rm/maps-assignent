@@ -49,7 +49,7 @@ A React Native app to track walking routes using GPS and display them on an inte
 ## Repository Structure
 
 ```
-MapsAssignment/
+maps-assignent/
 ├── src/
 │   ├── components/
 │   ├── screens/
