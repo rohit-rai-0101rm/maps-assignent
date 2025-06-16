@@ -1,4 +1,4 @@
-// useLocation.ts
+
 import { useState } from 'react';
 import { Platform, PermissionsAndroid, Alert } from 'react-native';
 import Geolocation, { GeolocationResponse } from '@react-native-community/geolocation';

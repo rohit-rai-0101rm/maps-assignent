@@ -7,7 +7,6 @@ import { calculateDistance } from '../utils/calculateDistance';
 const WalkDetailScreen = ({ route }) => {
   const { walk } = route.params;
 
-  // Use your utility for distance calculation
   const totalDistance = useMemo(() => {
     if (walk.route.length < 2) return 0;
     return calculateDistance(walk.route);

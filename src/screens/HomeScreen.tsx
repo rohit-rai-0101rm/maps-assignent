@@ -9,16 +9,15 @@ import { formatTime } from '../utils';
 
 const HomeScreen = () => {
   const { isWalking, routeCoordinates, elapsedTime, startWalk, stopWalk } =
-    useWalkTracker(); // Hook for walk tracking
+    useWalkTracker();
   const navigation = useNavigation();
 
   const { region, fetchLocation, loading: locationLoading } = useLocation();
-  const [locationFetched, setLocationFetched] = useState(false); // Track whether location is fetched
+  const [locationFetched, setLocationFetched] = useState(false);
 
-  // Reset state when the screen is focused
   useFocusEffect(
     useCallback(() => {
-      setLocationFetched(false); // Reset the state when the user comes back to this screen
+      setLocationFetched(false);
     }, []),
   );
 
@@ -31,8 +30,8 @@ const HomeScreen = () => {
         <ControlButton
           title={locationLoading ? 'Loading...' : 'Fetch Current Location'}
           onPress={() => {
-            fetchLocation(); // Fetch the location
-            setLocationFetched(true); // Mark location as fetched
+            fetchLocation();
+            setLocationFetched(true);
           }}
           disabled={locationLoading}
           backgroundColor="#F0597A"
@@ -48,7 +47,7 @@ const HomeScreen = () => {
         {routeCoordinates.length > 0 && (
           <Polyline
             coordinates={routeCoordinates}
-            strokeColor="#1a73e8" // Google Maps-like blue color
+            strokeColor="#1a73e8"
             strokeWidth={6}
             lineCap="round"
             lineJoin="round"

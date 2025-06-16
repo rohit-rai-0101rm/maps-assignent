@@ -9,7 +9,6 @@ import useWalks from '../hooks/useWalk';
 const WalksScreen = () => {
   const walks = useWalks();
 
-  // Calculate total stats with useMemo for performance
   const { totalWalks, totalDuration, totalDistance } = useMemo(() => {
     const totalWalks = walks.length;
     const totalDuration = walks.reduce(
@@ -27,7 +26,6 @@ const WalksScreen = () => {
 
   return (
     <View style={styles.container}>
-      {/* Stats Panel */}
       {walks.length > 0 && (
         <View style={styles.statsContainer}>
           <View style={styles.statBox}>
@@ -45,7 +43,6 @@ const WalksScreen = () => {
         </View>
       )}
 
-      {/* Walks List */}
       {walks.length === 0 ? (
         <NoWalksMessage />
       ) : (

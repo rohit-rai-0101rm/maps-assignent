@@ -1,4 +1,3 @@
-// utils.ts
 
 export const formatTime = (seconds: number): string => {
     const mins = Math.floor(seconds / 60);

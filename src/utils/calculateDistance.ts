@@ -3,7 +3,7 @@ export const calculateDistance = (
     coords: { latitude: number; longitude: number }[]
 ): number => {
     const toRad = (val: number) => (val * Math.PI) / 180;
-    const R = 6371; // Radius of Earth in km
+    const R = 6371;
 
     let dist = 0;
     for (let i = 1; i < coords.length; i++) {
@@ -23,5 +23,5 @@ export const calculateDistance = (
         dist += R * c;
     }
 
-    return dist; // in kilometers
+    return dist;
 };

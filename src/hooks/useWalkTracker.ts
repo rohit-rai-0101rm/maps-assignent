@@ -3,12 +3,12 @@ import { Alert } from 'react-native';
 import Geolocation, { GeolocationResponse } from '@react-native-community/geolocation';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { formatTime } from '../utils';
-import { calculateDistance } from '../utils/calculateDistance'; // ✅ Import distance util
+import { calculateDistance } from '../utils/calculateDistance';
 
 type WalkData = {
     timestamp: number;
     duration: number;
-    distance: number; // ✅ Include distance
+    distance: number;
     route: { latitude: number; longitude: number }[];
 };
 
@@ -58,7 +58,7 @@ const useWalkTracker = () => {
             timerRef.current = null;
         }
 
-        const distance = calculateDistance(routeCoordinates); // ✅ Calculate distance
+        const distance = calculateDistance(routeCoordinates);
 
         const walkData: WalkData = {
             timestamp: Date.now(),
