@@ -28,12 +28,12 @@ A React Native app to track walking routes using GPS and display them on an inte
 
 ## Tech Stack
 
-* React Native (latest stable)
+* React Native
 * TypeScript
 * React Navigation
-* react-native-maps (Google Maps)
+* react-native-maps
 * @react-native-async-storage/async-storage
-* React hooks (`useState`)
+* React hooks 
 
 ---
 
@@ -72,7 +72,7 @@ MapsAssignment/
 
 ```bash
 git clone git@github.com:rohit-rai-0101rm/maps-assignent.git
-cd walk-tracker-app
+cd maps-assignent
 ```
 
 ### 2. Install Dependencies
