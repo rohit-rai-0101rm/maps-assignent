@@ -71,7 +71,7 @@ MapsAssignment/
 ### 1. Clone the Repository
 
 ```bash
-git clone https://github.com/your-username/walk-tracker-app.git
+git clone git@github.com:rohit-rai-0101rm/maps-assignent.git
 cd walk-tracker-app
 ```
 
