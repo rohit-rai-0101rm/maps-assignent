@@ -1,10 +1,3 @@
-Thanks for the clarification, bhai. You’re asking for the actual **`README.md` file** to submit along with your **Walk Tracker App React Native project**, as per the assignment.
-
-Here’s a **clean, ready-to-copy `README.md`** that follows the assignment's expectations, including setup, features, architecture, and optional enhancements:
-
----
-
-### 📄 `README.md`
 
 ```markdown
 # 🚶 Walk Tracker App
