@@ -21,7 +21,7 @@ A React Native app to track walking routes using GPS and display them on an inte
 ### GPS + Local Storage
 
 * Requests location permissions
-* Tracks coordinates every 5–10 seconds
+* Tracks coordinates every 5 seconds
 * Saves each completed walk to AsyncStorage
 
 ---
@@ -61,7 +61,7 @@ MapsAssignment/
 ├── ios/
 ├── README.md
 ├── package.json
-└── screenshots/
+
 ```
 
 ---
